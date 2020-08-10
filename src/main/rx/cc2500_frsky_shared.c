@@ -206,9 +206,14 @@ void initialiseData(bool inBindState)
     cc2500WriteReg(CC2500_09_ADDR, inBindState ? 0x03 : rxCc2500SpiConfig()->bindTxId[0]);
     cc2500WriteReg(CC2500_07_PKTCTRL1, 0x0D);
     cc2500WriteReg(CC2500_19_FOCCFG, 0x16);
+
     if (!inBindState) {
-        cc2500WriteReg(CC2500_03_FIFOTHR,  0x14);
+        if (packetLength == FRSKY_RX_D16LBT_LENGTH) // 35 bytes
+            cc2500WriteReg(CC2500_03_FIFOTHR,  0x08); // 36 bytes according to table 29 cc2500 datasheet
+        else 
+            cc2500WriteReg(CC2500_03_FIFOTHR,  0x07); // default 32 bytes
     }
+
     delay(10);
 }
 
